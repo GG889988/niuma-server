@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>牛马得闲测试版</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; background: #f8f5f0; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo { font-size: 48px; }
+        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .name { font-weight: bold; color: #8b4513; }
+        .text { margin: 10px 0; }
+        .likes { color: #666; font-size: 0.9em; }
+        .loading { text-align: center; color: #888; padding: 40px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🐄 🐎</div>
+        <h1>牛马得闲 · 内测版</h1>
+        <p>你的匿名喘息空间</p>
+    </div>
+    <div id="postList">
+        <div class="loading">正在加载牧场动态...</div>
+    </div>
+
+    <script>
+        // 🔥 最重要的一步：把下面引号里的内容，换成你第二步最后得到的那个Railway网址！
+        const 后台地址 = 'https://niuma-server-production.up.railway.app';
+
+        // 当网页加载好，就去后台拿数据
+        window.onload = async function() {
+            try {
+                const 响应 = await fetch(后台地址 + '/api/posts');
+                const 结果 = await 响应.json();
+                
+                const 帖子容器 = document.getElementById('postList');
+                帖子容器.innerHTML = ''; // 清空“加载中”
+                
+                if (结果.success) {
+                    // 把每条动态做成卡片，插到网页里
+                    结果.data.forEach(动态 => {
+                        const 卡片 = document.createElement('div');
+                        卡片.className = 'card';
+                        卡片.innerHTML = `
+                            <div class="name">${动态.name}</div>
+                            <div class="text">${动态.text}</div>
+                            <div class="likes">👍 ${动态.likes} 次共鸣</div>
+                        `;
+                        帖子容器.appendChild(卡片);
+                    });
+                } else {
+                    帖子容器.innerHTML = '<div class="card">数据加载出错了。</div>';
+                }
+            } catch (错误) {
+                document.getElementById('postList').innerHTML = `<div class="card">连接后台失败！请检查网络，并确保后台地址填写正确。<br><br>你填写的地址是：<strong>${后台地址}</strong></div>`;
+                console.error('错误详情：', 错误);
+            }
+        };
+    </script>
+</body>
+</html>
