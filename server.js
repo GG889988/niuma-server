@@ -9,3 +9,7 @@ app.get('/', (req, res) => {
 app.listen(port, '0.0.0.0', () => {
   console.log(`服务器运行在端口 ${port}`);
 });
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://grand-mandazi-22f8d5.netlify.app'
+}));
