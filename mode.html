@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>选择模式-牛马得闲</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: #fdf8f0;
+      font-family: 宋体;
+    }
+    /* 按钮容器，让按钮居中 */
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    /* 按钮样式：主按钮填品牌色，次要按钮是线框 */
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      border: none;
+      margin-bottom: 15px;
+      cursor: pointer; /* 鼠标放上去变手型 */
+    }
+    .login-btn {
+      background: #8B7E6B; /* 品牌色填充 */
+      color: white;
+    }
+    .guest-btn {
+      background: transparent; /* 透明背景 */
+      border: 1px solid #8B7E6B; /* 品牌色边框 */
+      color: #8B7E6B;
+    }
+    /* 底部隐私提示（产品里要求“不关联职业身份”） */
+    .tip {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 登录按钮：点了进“用户模式”（能点赞评论） -->
+    <button class="btn login-btn" onclick="goToDynamic('user')">
+      手机号验证登录<br>解锁完整匿名互动功能
+    </button>
+    <!-- 游客按钮：点了进“游客模式”（只能看） -->
+    <button class="btn guest-btn" onclick="goToDynamic('guest')">
+      游客模式进入<br>立即体验，仅限浏览
+    </button>
+    <!-- 隐私提示语（产品要求的） -->
+    <div class="tip">我们承诺，绝不关联你的职业身份</div>
+  </div>
+
+  <!-- 按钮点击逻辑：记着用户选的模式，跳去动态页 -->
+  <script>
+    function goToDynamic(mode) {
+      // 简单说：在浏览器里存个标记，下次打开还知道是游客还是用户
+      localStorage.setItem('userMode', mode);
+      // 跳转到动态页
+      window.location.href = 'dynamic.html';
+    }
+  </script>
+</body>
+</html>
