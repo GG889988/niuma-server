@@ -1,193 +1,152 @@
-// 牛马得闲 - 数据库版（装上了记事本！）
+// 牛马得闲 - 紧急修复版（先恢复服务）
 const express = require('express');
-const { Pool } = require('pg');
-require('dotenv').config();
+const cors = require('cors'); // 添加这个，解决跨域问题
 
 const app = express();
+app.use(cors()); // 启用跨域支持
 app.use(express.json());
+
 const PORT = process.env.PORT || 3000;
 
-// 1. 连接你的“云端记事本”
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+// 🌟 核心接口（先用模拟数据保证服务正常）
+
+// 1. 首页说明
+app.get('/', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>🐮🐴 牛马得闲 - 后端服务器（维护中）</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 40px; text-align: center; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .status { 
+          background: #d4edda; 
+          color: #155724; 
+          padding: 20px; 
+          border-radius: 8px;
+          margin: 20px 0;
+        }
+        .error { 
+          background: #f8d7da; 
+          color: #721c24; 
+          padding: 20px; 
+          border-radius: 8px;
+          margin: 20px 0;
+        }
+        .api-box {
+          background: #f8f9fa;
+          padding: 15px;
+          margin: 10px 0;
+          border-radius: 5px;
+          text-align: left;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>🐮🐴 牛马得闲 - 后端服务器</h1>
+        <div class="status">
+          <h3>✅ 服务器正在运行</h3>
+          <p>数据库连接暂时故障，正在使用模拟数据</p>
+        </div>
+        
+        <div class="api-box">
+          <h4>📡 可用API接口：</h4>
+          <ul>
+            <li><a href="/api/posts">GET /api/posts</a> - 获取动态（模拟数据）</li>
+            <li><a href="/api/test">GET /api/test</a> - 测试接口</li>
+            <li><a href="/api/stats">GET /api/stats</a> - 查看统计数据</li>
+          </ul>
+        </div>
+        
+        <div style="margin-top: 30px;">
+          <h4>📱 用户访问地址：</h4>
+          <p><a href="https://grand-mandazi-22f8d5.netlify.app" target="_blank">
+            https://grand-mandazi-22f8d5.netlify.app
+          </a></p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
 });
 
-// 2. 创建“动态记录本”页面（建表）
-async function setupNotebook() {
-  try {
-    const client = await pool.connect();
-    
-    // 创建“动态记录本”的第一页
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS posts (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(50) NOT NULL,
-        text TEXT NOT NULL,
-        likes INTEGER DEFAULT 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    
-    // 检查本子是不是空的，空的话写三条示例
-    const result = await client.query('SELECT COUNT(*) FROM posts');
-    const count = parseInt(result.rows[0].count);
-    
-    if (count === 0) {
-      await client.query(`
-        INSERT INTO posts (name, text, likes) VALUES
-        ('疲惫的骆驼', '今天搬了10吨代码，蹄子都磨秃了...', 5),
-        ('沉默的斑马', '在黑白格子间寻找生活的意义', 3),
-        ('乐观的松鼠', '囤够了bug，准备过冬慢慢修！', 8)
-      `);
-      console.log('✅ 已写入三条示例动态');
+// 2. 获取动态（模拟数据，保证前端能显示）
+app.get('/api/posts', (req, res) => {
+  const mockPosts = [
+    { 
+      id: 1, 
+      name: '疲惫的骆驼', 
+      text: '数据库正在维护，这是临时数据...', 
+      likes: 1,
+      created_at: new Date().toISOString()
+    },
+    { 
+      id: 2, 
+      name: '沉默的斑马', 
+      text: '技术小哥正在紧急修复中...', 
+      likes: 1,
+      created_at: new Date().toISOString()
+    },
+    { 
+      id: 3, 
+      name: '乐观的松鼠', 
+      text: '马上就能恢复正常啦！', 
+      likes: 1,
+      created_at: new Date().toISOString()
     }
-    
-    client.release();
-    console.log('✅ “动态记录本”准备好了！');
-  } catch (err) {
-    console.error('❌ 准备记事本失败:', err);
-  }
-}
-
-// 启动时准备记事本
-setupNotebook();
-
-// 3. 📖 接口1：读取所有动态（从记事本里读）
-app.get('/api/posts', async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT * FROM posts 
-      ORDER BY created_at DESC
-    `);
-    res.json({ 
-      success: true, 
-      data: result.rows,
-      message: `从记事本读取了${result.rows.length}条动态`
-    });
-  } catch (err) {
-    console.error('读取失败:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: '读取记事本失败'
-    });
-  }
+  ];
+  
+  res.json({ 
+    success: true, 
+    data: mockPosts,
+    message: '正在使用模拟数据，数据库连接故障中...'
+  });
 });
 
-// 4. ✍️ 接口2：发布新动态（往记事本里写）
-app.post('/api/posts', async (req, res) => {
-  try {
-    const { name, text } = req.body;
-    
-    // 简单验证
-    if (!name || !text) {
-      return res.status(400).json({ 
-        success: false, 
-        message: '姓名和内容都要写哦' 
-      });
+// 3. 测试接口
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: '✅ 后端服务正常运行！',
+    timestamp: new Date().toISOString(),
+    status: '模拟数据模式'
+  });
+});
+
+// 4. 统计数据（模拟）
+app.get('/api/stats', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      total_posts: 3,
+      total_likes: 3,
+      status: '模拟数据模式',
+      message: '数据库恢复后显示真实数据'
     }
-    
-    // 写入记事本
-    const result = await pool.query(
-      'INSERT INTO posts (name, text) VALUES ($1, $2) RETURNING *',
-      [name, text]
-    );
-    
-    res.json({ 
-      success: true, 
-      data: result.rows[0],
-      message: '动态发布成功！'
-    });
-  } catch (err) {
-    console.error('发布失败:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: '发布失败，记事本可能被锁了' 
-    });
-  }
+  });
 });
 
-// 5. 👍 接口3：给动态点赞
-app.post('/api/posts/:id/like', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query(
-      'UPDATE posts SET likes = likes + 1 WHERE id = $1 RETURNING *',
-      [id]
-    );
-    
-    if (result.rows.length === 0) {
-      return res.status(404).json({ 
-        success: false, 
-        message: '没找到这条动态' 
-      });
-    }
-    
-    res.json({ 
-      success: true, 
-      data: result.rows[0],
-      message: '点赞成功！'
-    });
-  } catch (err) {
-    console.error('点赞失败:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: '点赞失败了' 
-    });
-  }
+// 5. 发布动态（临时关闭）
+app.post('/api/posts', (req, res) => {
+  res.json({
+    success: false,
+    message: '⏸️ 发布功能暂时关闭，数据库维护中...'
+  });
 });
 
-// 6. 📊 接口4：统计数据
-app.get('/api/stats', async (req, res) => {
-  try {
-    const totalResult = await pool.query('SELECT COUNT(*) FROM posts');
-    const likesResult = await pool.query('SELECT SUM(likes) FROM posts');
-    
-    res.json({
-      success: true,
-      data: {
-        total_posts: parseInt(totalResult.rows[0].count),
-        total_likes: parseInt(likesResult.rows[0].sum || 0),
-        message: '数据统计完成'
-      }
-    });
-  } catch (err) {
-    console.error('统计失败:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: '统计数据失败' 
-    });
-  }
-});
-
-// 7. 🎯 测试接口（保留）
-app.get('/api/test-db', async (req, res) => {
-  try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT NOW() as current_time');
-    client.release();
-    
-    res.json({ 
-      success: true, 
-      message: '🎯 后台机器和记事本连接正常！',
-      data: result.rows[0]
-    });
-  } catch (err) {
-    console.error('测试失败:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: '连接记事本失败'
-    });
-  }
+// 6. 点赞功能（临时关闭）
+app.post('/api/posts/:id/like', (req, res) => {
+  res.json({
+    success: false,
+    message: '⏸️ 点赞功能暂时关闭，数据库维护中...'
+  });
 });
 
 // 启动服务器
 app.listen(PORT, () => {
-  console.log(`🚀 牛马后台机器已启动，记事本准备就绪！`);
-  console.log(`📖 可用接口：`);
-  console.log(`   GET  /api/posts    - 读取所有动态`);
-  console.log(`   POST /api/posts    - 发布新动态`);
-  console.log(`   POST /api/posts/:id/like - 点赞`);
-  console.log(`   GET  /api/stats    - 查看统计数据`);
-  console.log(`   GET  /api/test-db  - 测试记事本连接`);
+  console.log(`🚀 牛马后台机器已启动（紧急模式）`);
+  console.log(`📡 服务地址：http://localhost:${PORT}`);
+  console.log(`🔧 当前模式：模拟数据（数据库故障中）`);
 });
