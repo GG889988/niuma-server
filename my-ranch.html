@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的牧场-牛马得闲</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #fdf8f0;
+      font-family: 宋体;
+      padding-bottom: 60px;
+    }
+    /* 身份区：居中显示 */
+    .identity-area {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .page-title {
+      font-size: 22px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .today-identity {
+      color: #8B7E6B;
+      font-size: 16px;
+    }
+    /* 足迹区域：白色卡片 */
+    .footprint-area {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .area-title {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .footprint-item {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer; /* 能点击跳转 */
+    }
+    .footprint-item:hover {
+      color: #8B7E6B;
+    }
+    /* 设置区域：白色卡片 */
+    .setting-area {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    .setting-btn {
+      border: none;
+      background: transparent;
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .delete-btn {
+      color: red; /* 注销按钮红色（产品要求） */
+    }
+    /* 底部导航（和动态页一样） */
+    .nav-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      background: white;
+      border-top: 1px solid #eee;
+    }
+    .nav-bottom a {
+      color: #8B7E6B;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 身份区：今日身份+ID -->
+  <div class="identity-area">
+    <h1 class="page-title">我的牧场</h1>
+    <div class="today-identity">今日身份：迷茫的河马 (ID:牧#X3K9)</div>
+  </div>
+
+  <!-- 我的足迹：发布和点赞记录 -->
+  <div class="footprint-area">
+    <div class="area-title">我的足迹</div>
+    <div class="footprint-item" onclick="goToPost(1)">2小时前 发布了一条动态</div>
+    <div class="footprint-item" onclick="goToPost(3)">昨天 共鸣了“疲惫的骆驼”的动态</div>
+  </div>
+
+  <!-- 设置区域：退出+注销 -->
+  <div class="setting-area">
+    <div class="area-title">设置</div>
+    <button class="setting-btn" onclick="logout()">退出登录</button>
+    <button class="setting-btn delete-btn" onclick="deleteAccount()">注销账号（需二次确认）</button>
+  </div>
+
+  <!-- 底部导航 -->
+  <div class="nav-bottom">
+    <a href="dynamic.html">🕒牧场动态</a>
+    <a href="publish.html">+发布动态</a>
+    <a href="my-ranch.html">🏕️我的牧场</a>
+  </div>
+
+  <script>
+    // 1. 点击足迹，跳转到动态页对应帖子（模拟）
+    function goToPost(postId) {
+      window.location.href = 'dynamic.html';
+      // 实际项目会定位到具体帖子，这里先跳动态页
+    }
+
+    // 2. 退出登录：清空标记，跳回模式选择页
+    function logout() {
+      localStorage.removeItem('userMode');
+      window.location.href = 'mode.html';
+    }
+
+    // 3. 注销账号：二次确认，确认后退出
+    function deleteAccount() {
+      if (confirm('确定要注销账号吗？所有足迹会被删除')) {
+        alert('账号已注销');
+        logout(); // 注销后退出登录
+      }
+    }
+  </script>
+</body>
+</html>
