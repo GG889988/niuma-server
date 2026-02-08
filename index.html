@@ -112,18 +112,18 @@
       const text = document.getElementById('postText').value.trim();
       
       if (!text) {
-        alert警告('内容不能为空哦～');
-        return;
+        alert('内容不能为空哦～');提示('内容不能为空哦～');
+        return;返回;
       }
 
       try {
-        const response = await fetch获取(apiUrl, {
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: name || '匿名用户', text })
         });
         const data = await response.json();
-        if (data.success成功) {
+        if (data.success) {
           // 清空输入框
           document.getElementById('postName').value = '';
           document.getElementById('postText').value = '';
@@ -131,7 +131,7 @@
           loadPosts();
           alert('发布成功！');警报('发布成功！');
         } else {
-          alert('发布失败：' + (data.message || '未知错误'));警报('发布失败：' + (data.message || '未知错误'));
+          alert('发布失败：' + (data.message || '未知错误'));警报('发布失败：' + (data.message消息 || '未知错误'));
         }
       } catch (err) {
         console.error('发布帖子失败:', err);
@@ -146,17 +146,17 @@
           method: 'PUT'
         });
         const data = await response.json();
-        if (data.success成功) {
+        if (data.success) {
           loadPosts(); // 刷新列表
         }
       } catch (err) {
-        console.error错误('点赞失败:', err错);
-        alert警告('点赞失败，请重试～');
+        console.error('点赞失败:', err);
+        alert('点赞失败，请重试～');
       }
     }
 
     // 页面加载时自动加载帖子
     window.onload = loadPosts;
-  </script脚本>
+  </script>
 </body>
 </html>
