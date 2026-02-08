@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- 适配手机，避免页面变形 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>牛马得闲-启动页</title>
+  <style>
+    /* 让内容居中，背景是产品里的浅米色 */
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #fdf8f0;
+    }
+    /* logo大小和圆角，好看点 */
+    .logo {
+      width: 120px;
+      height: 120px;
+      border-radius: 20px;
+    }
+    /* 产品名和标语样式 */
+    .title {
+      margin: 20px 0;
+      font-size: 24px;
+      color: #8B7E6B;
+    }
+    .slogan {
+      font-size: 16px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <!-- 显示logo -->
+  <img src="0牛马得闲logo (3).png" class="logo">
+  <!-- 产品名和核心标语（产品设计里的“卸下身份...”） -->
+  <div class="title">牛马得闲</div>
+  <div class="slogan">卸下身份，共享片刻喘息</div>
+
+  <!-- 3秒后自动跳转到模式选择页（不用改） -->
+  <script>
+    setTimeout(() => {
+      window.location.href = 'mode.html';
+    }, 3000);
+  </script>
+</body>
+</html>
