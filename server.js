@@ -3,12 +3,12 @@ const app = express();
 const path = require('path');
 const PORT = process.env.PORT || 3000;
 
-// 让服务器能访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）
+// 让服务器能访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）// 允许服务器访问所有静态文件（HTML/CSS/JS/图片）
 app.use(express.static(path.join(__dirname, '.')));
 
-// 根路径 → 启动页（launch.html）
+// 根路径 → 自动重定向到启动页
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'launch.html'));
+  res.redirect('/launch.html');
 });
 
 // 其他页面路由（兜底）
@@ -27,5 +27,5 @@ app.get('/my-ranch.html', (req, res) => {
 
 // 启动服务器
 app.listen(PORT, () => {
-  console.log(`服务器运行在端口 ${PORT}`);
+  console.log(`服务器跑起来了，端口: ${PORT}`);
 });
