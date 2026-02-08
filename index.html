@@ -1,62 +1,162 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>牛马得闲测试版</title>
-    <meta charset="utf-8">
-    <style>
-        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; background: #f8f5f0; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .logo { font-size: 48px; }
-        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .name { font-weight: bold; color: #8b4513; }
-        .text { margin: 10px 0; }
-        .likes { color: #666; font-size: 0.9em; }
-        .loading { text-align: center; color: #888; padding: 40px; }
-    </style>
+  <meta charset="UTF-8">
+  <title>牛马得闲·内测版</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #fdf8f0;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .post-form {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    .post-form input, .post-form textarea {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    .post-form button {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .post {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+    .post h4 {
+      margin: 0 0 10px;
+      color: #8b4513;
+    }
+    .post button {
+      background: none;
+      border: none;
+      color: #ff6b6b;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">🐄 🐎</div>
-        <h1>牛马得闲 · 内测版</h1>
-        <p>你的匿名喘息空间</p>
-    </div>
-    <div id="postList">
-        <div class="loading">正在加载牧场动态...</div>
-    </div>
+  <div class="header">
+    <h1>🐄🐎 牛马得闲·内测版</h1>
+    <p>你的匿名喘息空间</p>
+  </div>
 
-    <script>
-        // 🔥 最重要的一步：把下面引号里的内容，换成你第二步最后得到的那个Railway网址！
-        const 后台地址 = 'https://niuma-server-production.up.railway.app';
+  <!-- 发布新帖子表单 -->
+  <div class="post-form">
+    <h3>发布新帖子</h3>
+    <input type="text" id="postName" placeholder="你的昵称（可选）">
+    <textarea id="postText" placeholder="说点什么..." rows="3"></textarea>
+    <button onclick="submitPost()">发布</button>
+  </div>
 
-        // 当网页加载好，就去后台拿数据
-        window.onload = async function() {
-            try {
-                const 响应 = await fetch(后台地址 + '/api/posts');
-                const 结果 = await 响应.json();
-                
-                const 帖子容器 = document.getElementById('postList');
-                帖子容器.innerHTML = ''; // 清空“加载中”
-                
-                if (结果.success) {
-                    // 把每条动态做成卡片，插到网页里
-                    结果.data.forEach(动态 => {
-                        const 卡片 = document.createElement('div');
-                        卡片.className = 'card';
-                        卡片.innerHTML = `
-                            <div class="name">${动态.name}</div>
-                            <div class="text">${动态.text}</div>
-                            <div class="likes">👍 ${动态.likes} 次共鸣</div>
-                        `;
-                        帖子容器.appendChild(卡片);
-                    });
-                } else {
-                    帖子容器.innerHTML = '<div class="card">数据加载出错了。</div>';
-                }
-            } catch (错误) {
-                document.getElementById('postList').innerHTML = `<div class="card">连接后台失败！请检查网络，并确保后台地址填写正确。<br><br>你填写的地址是：<strong>${后台地址}</strong></div>`;
-                console.error('错误详情：', 错误);
-            }
-        };
-    </script>
+  <!-- 帖子列表容器 -->
+  <div id="postsList"></div>
+
+  <script>
+    // 后端接口地址
+    const apiUrl = 'https://niuma-server-production.up.railway.app/api/posts';
+
+    // 加载所有帖子
+    async function loadPosts() {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        if (data.success) {
+          renderPosts(data.data);
+        }
+      } catch (err) {
+        console.error('加载帖子失败:', err);
+      }
+    }
+
+    // 渲染帖子列表
+    function renderPosts(posts) {
+      const list = document.getElementById('postsList');
+      if (posts.length === 0) {
+        list.innerHTML = '<p style="text-align:center">还没有帖子，快来发布第一条吧～</p>';
+        return;
+      }
+      list.innerHTML = posts.map(post => `
+        <div class="post">
+          <h4>${post.name || '匿名用户'}</h4>
+          <p>${post.text}</p>
+          <button onclick="likePost(${post.id})">👍 ${post.likes || 0} 次共鸣</button>
+        </div>
+      `).join('');
+    }
+
+    // 发布新帖子
+    async function submitPost() {
+      const name = document.getElementById('postName').value.trim();
+      const text = document.getElementById('postText').value.trim();
+      
+      if (!text) {
+        alert警告('内容不能为空哦～');
+        return;
+      }
+
+      try {
+        const response = await fetch获取(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name || '匿名用户', text })
+        });
+        const data = await response.json();
+        if (data.success成功) {
+          // 清空输入框
+          document.getElementById('postName').value = '';
+          document.getElementById('postText').value = '';
+          // 重新加载帖子
+          loadPosts();
+          alert('发布成功！');警报('发布成功！');
+        } else {
+          alert('发布失败：' + (data.message || '未知错误'));警报('发布失败：' + (data.message || '未知错误'));
+        }
+      } catch (err) {
+        console.error('发布帖子失败:', err);
+        alert('发布失败，请检查网络～');
+      }
+    }
+
+    // 点赞帖子
+    async function likePost(postId) {
+      try {
+        const response = await fetch(`${apiUrl}/${postId}/like`, {
+          method: 'PUT'
+        });
+        const data = await response.json();
+        if (data.success成功) {
+          loadPosts(); // 刷新列表
+        }
+      } catch (err) {
+        console.error错误('点赞失败:', err错);
+        alert警告('点赞失败，请重试～');
+      }
+    }
+
+    // 页面加载时自动加载帖子
+    window.onload = loadPosts;
+  </script脚本>
 </body>
 </html>
